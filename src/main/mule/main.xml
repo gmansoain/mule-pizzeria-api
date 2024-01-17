@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="getPizzas" doc:id="78959399-2c35-40ac-ae30-97aeaa1b1a56" >
+		<logger level="INFO" doc:name="Received GET ALL Pizzas Request" doc:id="7dfcd18c-af7d-46bc-ba29-d90b0fe50d7a" message='#["Received GET ALL Pizzas Request"]'/>
+		<db:select doc:name="Select" doc:id="98cfbefa-6306-489b-a24d-2d047b9d0f1c" config-ref="Database_Config_MYSQL">
+			<db:sql ><![CDATA[SELECT * FROM pizzas]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="b5167b7b-34f7-41ec-b741-9f783b982efe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Finished GET ALL Pizzas Request1" doc:id="58371a5a-c875-4cdb-b844-ef484808d976" message='#["Finished GET ALL Pizzas Request"]' />
+	</flow>
+	<flow name="createPizza" doc:id="b7406580-2498-4724-9c40-75213acd51f3" >
+		<logger level="INFO" doc:name="Received CREATE Pizza Request" doc:id="9bc56f1d-7f08-440f-b068-6e19e1b571fc" message='#["Received CREATE Pizza Request"]' />
+		<db:insert doc:name="Insert" doc:id="4291dbe6-7d16-4e17-b60b-34c36174c629" config-ref="Database_Config_MYSQL">
+			<db:sql ><![CDATA[INSERT INTO pizzas (name, ingredients, price, photoName, soldOut)
+VALUES (:name, :ingredients, :price, :photoName, :soldOut);
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	name: payload.name,
+	ingredients: payload.ingredients,
+	price: payload.price,
+	photoName: payload.photoName,
+	soldOut: payload.soldOut
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Finished CREATE Pizza Request" doc:id="9dee5f78-c760-48d6-a9f3-7e300bd0162f" message='#["Finished CREATE Pizza Request"]' />
+	</flow>
+</mule>

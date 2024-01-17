@@ -1,0 +1,34 @@
+#%RAML 1.0
+title: Pizzeria API
+mediaType: 
+- application/json
+
+uses:
+  common: exchange_modules/fc9e3283-a489-4e88-99aa-cceea4aa5ea1/gon-common-api-fragments/1.0.4/gon-common-api-fragments.raml
+
+types:
+  Pizza: !include datatypes/Pizza.raml
+  PizzaNoID: !include datatypes/PizzaNoID.raml
+
+/pizzas:
+  get:
+    is: [common.error-responses]
+    description: Retrieve List of Pizzas in the Menu
+    displayName: List of Pizzas
+    responses:
+      200:
+        body:
+          type: Pizza[]
+
+  post:
+    is: [common.error-responses]
+    description: Add a New Pizza to the Menu
+    displayName: Add Pizza
+    body:
+      type: PizzaNoID
+    responses:
+      201:
+        description: Incident created successfully
+
+
+        

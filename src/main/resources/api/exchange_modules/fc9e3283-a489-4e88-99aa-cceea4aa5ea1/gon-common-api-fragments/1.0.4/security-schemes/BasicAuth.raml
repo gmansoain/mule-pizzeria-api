@@ -1,0 +1,9 @@
+#%RAML 1.0 SecurityScheme
+type: Basic Authentication
+description: This API supports Basic Authentication through standard headers
+displayName: basic-auth
+describedBy:
+  headers:
+    Authorization: 
+      description: Used to send Basic Authentication credentials.
+      type: string
